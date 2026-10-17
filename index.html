@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ANTI-CACHE BUSTING HEADERS -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title id="pageTitle">Revenge Battle - Premium Esports Tournaments</title>
     <!-- Google Fonts for Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -781,7 +787,7 @@
             </div>
             <div class="form-group">
                 <label>APK Download Link:</label>
-                <input type="text" id="adminApkLink" value="https://files.catbox.moe/3ouddg.apk">
+                <input type="text" id="adminApkLink" value="https://github.com/knowledge0744-bit/Revenge-Battle/releases/download/v1.0/revengebattle.apk">
             </div>
             <div class="form-group">
                 <label>YouTube Link:</label>
@@ -808,10 +814,11 @@
 
     <!-- --- JAVASCRIPT LOGIC --- -->
     <script>
+        const CONFIG_VERSION = "v2.1"; // Bumped version to force clear old cached localStorage
         const defaultConfig = {
             appName: "Revenge Battle",
             appIcon: "https://i.ibb.co/9mYQb1dW/toast-icon.png",
-            apkLink: "https://files.catbox.moe/3ouddg.apk",
+            apkLink: "https://github.com/knowledge0744-bit/Revenge-Battle/releases/download/v1.0/revengebattle.apk",
             youtube: "https://youtube.com/@thedisplinetrader36?si=Nj7zCSINNkdPTEI5",
             telegram: "https://t.me/eSports_devloper",
             whatsapp: "7084889760",
@@ -819,8 +826,15 @@
         };
 
         function getConfig() {
+            const savedVersion = localStorage.getItem('siteConfigVersion');
             const saved = localStorage.getItem('siteConfig');
-            return saved ? JSON.parse(saved) : defaultConfig;
+            
+            if (!saved || savedVersion !== CONFIG_VERSION) {
+                localStorage.setItem('siteConfig', JSON.stringify(defaultConfig));
+                localStorage.setItem('siteConfigVersion', CONFIG_VERSION);
+                return defaultConfig;
+            }
+            return JSON.parse(saved);
         }
 
         function applyConfig() {
@@ -916,6 +930,7 @@
             };
 
             localStorage.setItem('siteConfig', JSON.stringify(newConfig));
+            localStorage.setItem('siteConfigVersion', CONFIG_VERSION);
             applyConfig();
             closeAdminModal();
             alert("Settings updated successfully!");
